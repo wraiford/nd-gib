@@ -1,0 +1,63 @@
+{
+  "name": "nd-gib",
+  "version": "0.0.1",
+  "description": "n-dimensional front end for ibgib",
+  "funding": {
+    "type": "individual",
+    "url": "https://paypal.me/ibGib"
+  },
+  "main": "dist/index.mjs",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && tsc -b tsconfig.json --force && npm run copy:assets",
+    "build:test": "npm run clean && tsc -b tsconfig.test.json --force",
+    "build:test:noclean": "tsc -b tsconfig.test.json --force",
+    "test": "npm run test:both",
+    "test:both": "npm run build:test && npm run test:node:nobuild && npm run test:browser:nobuild",
+    "man:test:both": "use this if you want to test in both node and browser contexts",
+    "pretest:node": "npm run build:test",
+    "test:node": "node dist/respec-gib.node.mjs --inspect",
+    "man:test:node": "use this if you want to build+test in node",
+    "test:node:nobuild": "node dist/respec-gib.node.mjs --inspect",
+    "man:test:node:nobuild": "use this if you want to test in node but its already built",
+    "test:browser": "npm run build:test && echo \"not implemented yet\"",
+    "man:test:browser": "use this if you want to build+test only the browser context",
+    "test:browser:nobuild": "echo \"not implemented yet\"",
+    "man:test:browser:nobuild": "use this if you want to test only the browser context but its already built",
+    "test:browser:serve": "npm run build:test && echo \"not implemented yet\"",
+    "man:test:browser:serve": "use this if you want to build+test in the browser and don't want the browser to close when your done. (i.e. you're debugging)",
+    "test:browser:serve:nobuild": "\"not implemented yet\"",
+    "man:test:browser:serve:nobuild": "use this if you are troubleshooting existing dist output and don't want to overwrite those files. (and you're debugging in the browser)",
+    "prepare:publish": "npm run clean && npm version patch && npm run build && npm run pack",
+    "pack": "npm pack --pack-destination=\"./published\"",
+    "man:prepare:publish": "echo use this to patch > build > pack for publishing to npm repo",
+    "prestart": "npm run build",
+    "start": "npm run serve",
+    "man:start": "builds and starts a server atow",
+    "copy:assets": "cp ./src/assets/*.* ./dist",
+    "serve": "npx http-server -c=-1 -p=8000 ./dist"
+  },
+  "type": "module",
+  "keywords": [
+    "ibgib",
+    "dlt",
+    "blockchain",
+    "graph-database",
+    "metaverse"
+  ],
+  "author": "William Raiford",
+  "license": "ISC",
+  "dependencies": {
+    "@ibgib/core-gib": "^0.0.26",
+    "@ibgib/encrypt-gib": "^0.2.20",
+    "@ibgib/helper-gib": "^0.0.15",
+    "@ibgib/ts-gib": "^0.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.1",
+    "typescript": "^4.9.5"
+  },
+  "engines": {
+    "node": ">=19.0.0"
+  }
+}

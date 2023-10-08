@@ -1,0 +1,60 @@
+{
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "search.exclude": {
+        "**/*.BAK": true,
+        "**/dist": true
+    },
+    "files.watcherExclude": {
+        "**/*.BAK": true
+    },
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "workbench.colorTheme": "Red",
+    "workbench.colorCustomizations": {
+        "editor.background": "#10010b",
+        "sideBar.background": "#220418",
+        "editor.lineHighlightBackground": "#00ff2f18",
+        "activityBar.activeBackground": "#054517",
+        "activityBar.background": "#430c0c",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#054517",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#1a1a1a",
+        "statusBar.background": "#381616",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#1a1a1a",
+        "statusBarItem.remoteBackground": "#000000",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#2d0d0d",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#00000099",
+        "titleBar.inactiveForeground": "#e7e7e799",
+        "tab.activeBackground": "#810f02",
+        "tab.activeBorder": "#06bbcf",
+        "tab.unfocusedActiveBackground": "#452f2b"
+    },
+    "editor.tokenColorCustomizations": {
+        "[Red]": {
+            "variables": "#1681b1",
+            "comments": "#429255a1",
+            "types": "#ec75da",
+            "keywords": "#1b8161",
+            "functions": "#01b816",
+            "textMateRules": [
+                {
+                    "name": "Lists",
+                    "scope": "markup.list",
+                    "settings": {
+                        "foreground": "#af77b7"
+                    }
+                },
+            ],
+        }
+    },
+    "peacock.color": "black",
+    "insertGuid.pasteAutomatically": "{n}"
+}

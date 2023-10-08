@@ -1,0 +1,31 @@
+# logs
+npm-debug.log*
+
+# npm
+node_modules
+*.tgz
+published
+
+# compiled targets
+dist/*
+
+# backups
+*.BAK
+*.bak
+
+# vim
+
+# typescript
+*.tsbuildinfo
+
+# mac
+.DS_Store
+
+# used in testing
+test-rcli
+testOutputPath
+manual-test-rcli
+.ibgib
+
+# ide related
+*.vim

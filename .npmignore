@@ -1,0 +1,15 @@
+# ./dist/test/
+published/
+ibgib*.tgz
+
+# going to include src for the time being with the package.
+# src/
+
+*.tsbuildinfo
+
+*.bak
+*.BAK
+
+# used in testing
+test-rcli
+testOutputPath
