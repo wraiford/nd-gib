@@ -75,11 +75,11 @@ export class SketchyRenderer_V1 extends RendererBase_V1 {
         }
     }
 
-    gridRendered = false;
+    gridRendered = 0;
     async renderGrid(): Promise<void> {
         const lc = `${this.lc}[${this.renderGrid.name}]`;
         try {
-            if (this.gridRendered) { return; /* <<<< returns early */ }
+            if (this.gridRendered > 2) { return; /* <<<< returns early */ }
             // render the axes
             const context = this.canvas.getContext('2d');
             if (!context) { throw new Error(`couldn't get 2d context? (E: 2cee5c6f47643843d9b5648316251c23)`); }
@@ -90,7 +90,8 @@ export class SketchyRenderer_V1 extends RendererBase_V1 {
             context.moveTo(0, this.halfHeight);
             context.lineTo(this.width, this.halfHeight);
             context.stroke();
-            this.gridRendered = true;
+            // this.gridRendered = true;
+            this.gridRendered++;
         } catch (error) {
             console.error(`${lc} ${error.message}`);
             throw error;
