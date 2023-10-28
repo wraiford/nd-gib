@@ -5,9 +5,13 @@
  * for the Metronome ibgib.
  */
 
-import { extractErrorMsg, UUID_REGEXP, delay, getSaferSubstring, getTimestampInTicks, getUUID, pretty } from '@ibgib/helper-gib';
-import { IbGib_V1, } from '@ibgib/ts-gib/dist/V1/index.mjs';
-
+import {
+    extractErrorMsg, delay, getSaferSubstring, getTimestampInTicks, getUUID, pretty, clone, getIdPool
+} from '@ibgib/helper-gib/dist/helpers/utils-helper.mjs';
+import { DEFAULT_DATA_PATH_DELIMITER } from '@ibgib/helper-gib/dist/constants.mjs';
+import { IbGib_V1, Rel8n, } from '@ibgib/ts-gib/dist/V1/types.mjs';
+import { Factory_V1, } from '@ibgib/ts-gib/dist/V1/factory.mjs';
+import { TransformResult } from '@ibgib/ts-gib/dist/types.mjs';
 import { ErrorIbGib_V1 } from '@ibgib/core-gib/dist/common/error/error-types.mjs';
 import { WitnessWithContextBase_V1 } from '@ibgib/core-gib/dist/witness/witness-with-context/witness-with-context-base-v1.mjs';
 import { MetaspaceService } from '@ibgib/core-gib/dist/witness/space/metaspace/metaspace-types.mjs';
@@ -17,19 +21,24 @@ import { isPic } from '@ibgib/core-gib/dist/common/pic/pic-helper.mjs';
 import { CommentIbGib_V1 } from '@ibgib/core-gib/dist/common/comment/comment-types.mjs';
 import { PicIbGib_V1 } from '@ibgib/core-gib/dist/common/pic/pic-types.mjs';
 import { errorIbGib } from '@ibgib/core-gib/dist/common/error/error-helper.mjs';
+import { DynamicFormFactoryBase } from '@ibgib/core-gib/dist/witness/factory/dynamic-form-factory-base.mjs';
+import { DynamicFormBuilder } from '@ibgib/core-gib/dist/common/form/form-helper.mjs';
+import { DynamicForm } from '@ibgib/core-gib/dist/common/form/form-items.mjs';
+import { WitnessFormBuilder } from '@ibgib/core-gib/dist/witness/witness-form-builder.mjs';
 
 import {
     MetronomeData_V1, MetronomeRel8ns_V1, MetronomeIbGib_V1,
     MetronomeCmd, MetronomeCmdData, MetronomeCmdRel8ns, MetronomeCmdIbGib,
-    MetronomeResultData, MetronomeResultRel8ns, MetronomeResultIbGib,
+    MetronomeResultData, MetronomeResultRel8ns, MetronomeResultIbGib, DEFAULT_METRONOME_DATA_V1, DEFAULT_METRONOME_REL8NS_V1,
 } from './metronome-types.mjs';
+import { DEFAULT_DESCRIPTION_METRONOME, DEFAULT_NAME_METRONOME } from './metronome-constants.mjs';
+import { MetronomeFormBuilder, getMetronomeIb } from './metronome-helper.mjs';
 
 import { GLOBAL_LOG_A_LOT } from '../ibgib-constants.mjs';
-
 /**
  * for logging. import this constant from your project.
  */
-const logalot = GLOBAL_LOG_A_LOT;
+const logalot = GLOBAL_LOG_A_LOT || true; // change this when you want to turn off verbose logging
 
 /**
  * sketching...
@@ -45,11 +54,11 @@ export class Metronome_V1
     protected parseAddlMetadataString<TParseResult>({ ib }: { ib: string; }): TParseResult {
         // const addlMetadataText = `${atom}_${classnameIsh}_${nameIsh}_${idIsh}`;
         throw new Error(`not impl yet check this over (E: fedb486e5d56eccbc73a79371d46d423)`);
-        if (!ib) { throw new Error(`ib required (E: 70cc6c19bbd231cc1f6077c23e43ac1b)`); }
+        if (!ib) { throw new Error(`ib required (E: 5d9cd90e66ee768a681926015c748c3e)`); }
         const lc = `[${this.parseAddlMetadataString.name}]`;
         try {
             const [atom, classnameIsh, nameIsh, idIsh] = ib.split('_');
-            const result = { atom, classnameIsh, nameIsh, idIsh, } as MetronomeAddlMetadata;
+            const result = { atom, classnameIsh, nameIsh, idIsh, } as TParseResult;
             return result as TParseResult; // i'm not liking the TParseResult...hmm
         } catch (error) {
             console.error(`${lc} ${extractErrorMsg({ error })}`);
@@ -412,11 +421,11 @@ export class Metronome_V1
 
 }
 
-*
+/*
  * factory for random Metronome witness.
  *
  * @see { @link DynamicFormFactoryBase }
- * /
+ */
 export class Metronome_V1_Factory
     extends DynamicFormFactoryBase<MetronomeData_V1, MetronomeRel8ns_V1, Metronome_V1> {
 
@@ -440,11 +449,11 @@ export class Metronome_V1_Factory
             data.uuid ||= await getUUID();
             let { classname } = data;
 
-            const ib = getMetronomeIb({ hmm });
+            const ib = getMetronomeIb({ data });
 
-            const resFirstGen = await factory.firstGen({
+            const resFirstGen = await Factory_V1.firstGen({
                 ib,
-                parentIbGib: factory.primitive({ ib: `witness ${classname}` }),
+                parentIbGib: Factory_V1.primitive({ ib: `witness ${classname}` }),
                 data,
                 rel8ns,
                 dna: true,
@@ -459,7 +468,7 @@ export class Metronome_V1_Factory
             let witnessIbGib = new Metronome_V1(undefined, undefined);
             await witnessIbGib.loadIbGibDto(witnessDto);
             resFirstGen.newIbGib = witnessIbGib;
-            if (logalot) { console.log(`${lc} witnessDto: ${pretty(witnessDto)} (I: c92772f96b8e95911f2919c5e45452d7)`); }
+            if (logalot) { console.log(`${lc} witnessDto: ${pretty(witnessDto)} (I: aecd4c0fb49c8d9f56618835968b13e2)`); }
 
             return resFirstGen as TransformResult<Metronome_V1>;
         } catch (error) {
@@ -475,17 +484,17 @@ export class Metronome_V1_Factory
         try {
             if (logalot) { console.log(`${lc} starting...`); }
             let { data } = witness;
-            if (!data) { throw new Error(`(UNEXPECTED) witness.data falsy? (E: e602e6cfde19e4e6fd28e2af34b0670f)`); }
-            if (logalot) { console.log(`${lc} data: ${pretty(data)} (I: b65237e1fcc32a9fa75d37ce8fa3bdc2)`); }
+            if (!data) { throw new Error(`(UNEXPECTED) witness.data falsy? (E: 32db2ec51ead6f6d894fb65fab3ed38f)`); }
+            if (logalot) { console.log(`${lc} data: ${pretty(data)} (I: 10bd3d8e0de9e0755a3a55ef8c2ab255)`); }
             // be careful of order here because of TS type inference
             const idPool = await getIdPool({ n: 100 });
             const form = new MetronomeFormBuilder()
                 .with({ idPool })
-                .name({ of: data.name, required: false, })
+                .name({ of: data.name ?? DEFAULT_NAME_METRONOME, required: false, })
                 .description({ of: data.description ?? DEFAULT_DESCRIPTION_METRONOME })
                 .and<MetronomeFormBuilder>()
                 .and<DynamicFormBuilder>()
-                .uuid({ of: data.uuid, required: true })
+                .uuid({ of: data.uuid ?? await getUUID(), required: false })
                 .classname({ of: data.classname! })
                 .and<WitnessFormBuilder>()
                 .commonWitnessFields({ data })

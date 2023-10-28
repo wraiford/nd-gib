@@ -10,8 +10,6 @@
 // import { ChildProcess, exec, ExecException } from 'node:child_process';
 import * as pathUtils from 'path';
 
-import { Observable, ReplaySubject, firstValueFrom } from 'rxjs';
-
 import {
     firstOfAll, firstOfEach, ifWe, ifWeMight, iReckon,
     lastOfAll, lastOfEach, respecfully, respecfullyDear
@@ -20,10 +18,12 @@ const maam = `[${import.meta.url}]`, sir = maam;
 
 import { extractErrorMsg, getTimestampInTicks, getUUID } from '@ibgib/helper-gib';
 
+import { GLOBAL_LOG_A_LOT } from '../ibgib-constants.mjs';
+
 /**
  * for verbose logging. import this.
  */
-const logalot = GLOBAL_LOG_A_LOT;
+const logalot = GLOBAL_LOG_A_LOT || true; // change this when you want to turn off verbose logging
 
 const lcFile: string = `[${pathUtils.basename(import.meta.url)}]`;
 

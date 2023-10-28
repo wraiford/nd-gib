@@ -11,25 +11,6 @@ import { WitnessResultData, WitnessResultIbGib, WitnessResultRel8ns } from '@ibg
 // import { CommentIbGib_V1 } from "@ibgib/core-gib/dist/common/comment/comment-types.mjs";
 // import { MetaspaceService } from "@ibgib/core-gib/dist/witness/space/metaspace/metaspace-types.mjs";
 
-// /**
-//  * example enum-like type+const that I use in ibgib. sometimes i put
-//  * these in the types.mts and sometimes in the const.mts, depending
-//  * on context.
-//  */
-// export type SomeEnum =
-//     'ib' | 'gib';
-// /**
-//  * @see {@link SomeEnum}
-//  */
-// export const SomeEnum = {
-//     ib: 'ib' as SomeEnum,
-//     gib: 'gib' as SomeEnum,
-// } satisfies { [key: string]: SomeEnum };
-// /**
-//  * values of {@link SomeEnum}
-//  */
-// export const SOME_ENUM_VALUES: SomeEnum[] = Object.values(SomeEnum);
-
 /**
  * time units that we use for metronome frequency.
  */
@@ -53,11 +34,6 @@ export const METRONOME_TIME_UNITS_VALUES: MetronomeTimeUnits[] = Object.values(M
  * @see {@link IbGib_V1.data}
  */
 export interface MetronomeData_V1 extends WitnessWithContextData_V1 {
-    // ibgib data (settings/values/etc) goes here
-    // /**
-    //  * docs yo
-    //  */
-    // setting: string;
     /**
      * how fast does the metronome tick
      *
@@ -70,20 +46,7 @@ export interface MetronomeData_V1 extends WitnessWithContextData_V1 {
      *
      * @see {@link frequncy}
      */
-    frequencyUnits: MetronomeTimeUnits;
-}
-
-/**
- * ibgib's intrinsic data goes here.
- *
- * @see {@link IbGib_V1.data}
- */
-export interface MetronomeData_V1 extends WitnessWithContextData_V1 {
-    // ibgib data (settings/values/etc) goes here
-    // /**
-    //  * docs yo
-    //  */
-    // setting: string;
+    frequencyUnits: MetronomeTimeUnits;   // setting: string;
 }
 
 /**
@@ -119,6 +82,17 @@ export interface MetronomeRel8ns_V1 extends WitnessWithContextRel8ns_V1 {
 export interface MetronomeIbGib_V1 extends IbGib_V1<MetronomeData_V1, MetronomeRel8ns_V1> {
 
 }
+
+export const DEFAULT_METRONOME_DATA_V1: MetronomeData_V1 = {
+    frequency: 0,
+    frequencyUnits: MetronomeTimeUnits.ms,
+
+    allowPrimitiveArgs: true,
+    catchAllErrors: true,
+    classname: 'Metronome_V1',
+}
+
+export const DEFAULT_METRONOME_REL8NS_V1: MetronomeRel8ns_V1 | undefined = undefined;
 
 /**
  * Cmds for interacting with ibgib witnesses.

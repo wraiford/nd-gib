@@ -11,7 +11,11 @@
 // import * as readline from 'node:readline/promises';
 // import { stdin, stdout } from 'node:process'; // decide if use this or not
 
-import { extractErrorMsg, UUID_REGEXP, delay, getSaferSubstring, getTimestampInTicks, getUUID, pretty } from '@ibgib/helper-gib';
+import {
+    extractErrorMsg, delay, getSaferSubstring,
+    getTimestampInTicks, getUUID, pretty,
+} from '@ibgib/helper-gib/dist/helpers/utils-helper.mjs';
+import { UUID_REGEXP, CLASSNAME_REGEXP, } from '@ibgib/helper-gib/dist/constants.mjs';
 import { Gib, Ib, } from '@ibgib/ts-gib/dist/types.mjs';
 // import { GIB, IbGib_V1, getGib, getGibInfo, } from '@ibgib/ts-gib/dist/V1/index.mjs';
 import { validateGib, validateIb, validateIbGibIntrinsically } from '@ibgib/ts-gib/dist/V1/validate-helper.mjs';
@@ -23,32 +27,29 @@ import { WitnessFormBuilder } from '@ibgib/core-gib/dist/witness/witness-form-bu
 import {
     MetronomeData_V1, MetronomeRel8ns_V1, MetronomeIbGib_V1,
 } from './metronome-types.mjs';
-import { METRONOME_NAME_REGEXP, } from './metronome-constants.mjs';
+import { METRONOME_ATOM, METRONOME_NAME_REGEXP, } from './metronome-constants.mjs';
 
 import { GLOBAL_LOG_A_LOT } from '../ibgib-constants.mjs';
 /**
  * for logging. import this constant from your project.
  */
-const logalot = GLOBAL_LOG_A_LOT;
+const logalot = GLOBAL_LOG_A_LOT || true;
 
 export function validateCommonMetronomeData({
-    MetronomeData,
+    data,
 }: {
-    MetronomeData?: MetronomeData_V1,
+    data?: MetronomeData_V1,
 }): string[] {
     const lc = `[${validateCommonMetronomeData.name}]`;
     try {
         if (logalot) { console.log(`${lc} starting...`); }
-        if (!MetronomeData) { throw new Error(`MetronomeData required (E: f1ac9317f69c16688de9f0b3487897c7)`); }
+        if (!data) { throw new Error(`Metronome data required (E: a3040bef4dbff030745d9b174c0d194d)`); }
         const errors: string[] = [];
-        const {
-            name, uuid, classname,
-        } =
-            MetronomeData;
+        const { name, uuid, classname, } = data;
 
         if (name) {
             if (!name.match(METRONOME_NAME_REGEXP)) {
-                errors.push(`name must match regexp: ${METRONOME_NAME_REGEXP} (E: edd69ceb198db32300eba9582640697a)`);
+                errors.push(`name must match regexp: ${METRONOME_NAME_REGEXP} (E: e2011ebbb46bf051f24df64b61864db2)`);
             }
         } else {
             errors.push(`name required.`);
@@ -56,15 +57,15 @@ export function validateCommonMetronomeData({
 
         if (uuid) {
             if (!uuid.match(UUID_REGEXP)) {
-                errors.push(`uuid must match regexp: ${UUID_REGEXP} (E: 4fbe110da40279f33dd2030b6ca58404)`);
+                errors.push(`uuid must match regexp: ${UUID_REGEXP} (E: 9b78722831a4fcb25ac3b036b57fb8e4)`);
             }
         } else {
             errors.push(`uuid required.`);
         }
 
         if (classname) {
-            if (!classname.match(METRONOME_NAME_REGEXP)) {
-                errors.push(`classname must match regexp: ${METRONOME_NAME_REGEXP} (E: 36738222810391a4dfb0d1b720462240)`);
+            if (!classname.match(CLASSNAME_REGEXP)) {
+                errors.push(`classname must match regexp: ${CLASSNAME_REGEXP}`);
             }
         }
 
@@ -84,18 +85,18 @@ export async function validateCommonMetronomeIbGib({
 }): Promise<string[] | undefined> {
     const lc = `[${validateCommonMetronomeIbGib.name}]`;
     try {
-        if (logalot) { console.log(`${lc} starting... (I: f70c18c203fe5a90b002c66e566aaa78)`); }
+        if (logalot) { console.log(`${lc} starting... (I: 115a74e2fbfb63a65981cf81bddffc74)`); }
         const intrinsicErrors: string[] = await validateIbGibIntrinsically({ ibGib: MetronomeIbGib }) ?? [];
 
-        if (!MetronomeIbGib.data) { throw new Error(`MetronomeIbGib.data required (E: b4e32f03042b2dd301f35fa246f5758c)`); }
+        if (!MetronomeIbGib.data) { throw new Error(`MetronomeIbGib.data required (E: f9caaad0bbc20e2e3f6286fe3517f720)`); }
         const ibErrors: string[] = [];
         let { MetronomeClassname, MetronomeName, MetronomeId } =
-            parseMetronomeIb({ MetronomeIb: MetronomeIbGib.ib });
-        if (!MetronomeClassname) { ibErrors.push(`MetronomeClassname required (E: cb6e60f4c7c7715f3550924eb01f02e3)`); }
-        if (!MetronomeName) { ibErrors.push(`MetronomeName required (E: f440149553e0f96e2a2fab3ea10de029)`); }
-        if (!MetronomeId) { ibErrors.push(`MetronomeId required (E: e3111187d93d9e8914414bdf4dde16f4)`); }
+            parseMetronomeIb({ ib: MetronomeIbGib.ib });
+        if (!MetronomeClassname) { ibErrors.push(`MetronomeClassname required (E: 55a15aca2374d9b23e47c58f29ba41bb)`); }
+        if (!MetronomeName) { ibErrors.push(`MetronomeName required (E: 4aa20200690e86f980ab67dc1302d519)`); }
+        if (!MetronomeId) { ibErrors.push(`MetronomeId required (E: 8a0c1a98ebb90071a0c54623054b5ad2)`); }
 
-        const dataErrors = validateCommonMetronomeData({ MetronomeData: MetronomeIbGib.data });
+        const dataErrors = validateCommonMetronomeData({ data: MetronomeIbGib.data });
 
         let result = [...(intrinsicErrors ?? []), ...(ibErrors ?? []), ...(dataErrors ?? [])];
         if (result.length > 0) {
@@ -112,27 +113,27 @@ export async function validateCommonMetronomeIbGib({
 }
 
 export function getMetronomeIb({
-    MetronomeData,
+    data,
     classname,
 }: {
-    MetronomeData: MetronomeData_V1,
+    data: MetronomeData_V1,
     classname?: string,
 }): Ib {
     const lc = `[${getMetronomeIb.name}]`;
     try {
-        const validationErrors = validateCommonMetronomeData({ MetronomeData });
-        if (validationErrors.length > 0) { throw new Error(`invalid MetronomeData: ${validationErrors} (E: e424c19428995c9abf7d508417d64f2f)`); }
+        const validationErrors = validateCommonMetronomeData({ data });
+        if (validationErrors.length > 0) { throw new Error(`invalid Metronome data: ${validationErrors} (E: cb865d01fadadbc1760f6b89852f6260)`); }
         if (classname) {
-            if (MetronomeData.classname && MetronomeData.classname !== classname) { throw new Error(`classname does not match MetronomeData.classname (E: 0644a174ed115e22217dd85263b4e591)`); }
+            if (data.classname && data.classname !== classname) { throw new Error(`classname does not match Metronome data.classname (E: 1d8c2a690f0daa651af4569702a30a8f)`); }
         } else {
-            classname = MetronomeData.classname;
-            if (!classname) { throw new Error(`classname required (E: ca68793f95dc557830ab92930669f763)`); }
+            classname = data.classname;
+            if (!classname) { throw new Error(`classname required (E: d4a90312d7b510e7fb729ccaf92cd9ab)`); }
         }
 
         // ad hoc validation here. should centralize witness classname validation
 
-        const { name, uuid } = MetronomeData;
-        return `witness $snake_name ${classname} ${name} ${uuid}`;
+        const { name, uuid } = data;
+        return `witness METRONOME_ATOM ${classname} ${name} ${uuid}`;
     } catch (error) {
         console.error(`${lc} ${extractErrorMsg(error)}`);
         throw error;
@@ -140,14 +141,14 @@ export function getMetronomeIb({
 }
 
 /**
- * Current schema is 'witness $snake_name [classname] [MetronomeName] [MetronomeId]'
+ * Current schema is 'witness METRONOME_ATOM [classname] [MetronomeName] [MetronomeId]'
  *
  * NOTE this is space-delimited
  */
 export function parseMetronomeIb({
-    MetronomeIb,
+    ib,
 }: {
-    MetronomeIb: Ib,
+    ib: Ib,
 }): {
     MetronomeClassname: string,
     MetronomeName: string,
@@ -155,9 +156,9 @@ export function parseMetronomeIb({
 } {
     const lc = `[${parseMetronomeIb.name}]`;
     try {
-        if (!MetronomeIb) { throw new Error(`MetronomeIb required (E: 687bb34829b109282f072e09c4ad97f1)`); }
+        if (!ib) { throw new Error(`Metronome ib required (E: bd8b22c6305005115214e1ef9609b36f)`); }
 
-        const pieces = MetronomeIb.split(' ');
+        const pieces = ib.split(' ');
 
         return {
             MetronomeClassname: pieces[2],
@@ -175,7 +176,7 @@ export class MetronomeFormBuilder extends WitnessFormBuilder {
 
     constructor() {
         super();
-        this.what = 'metronome';
+        this.what = METRONOME_ATOM;
     }
 
     // exampleSetting({
