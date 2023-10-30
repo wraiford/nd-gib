@@ -7,19 +7,38 @@
 import { delay } from "@ibgib/helper-gib";
 import { SketchyRenderer_V1 } from "./render/sketchy-renderer-v1.mjs";
 
+import { GLOBAL_LOG_A_LOT } from "./ibgib-constants.mjs";
+const logalot = GLOBAL_LOG_A_LOT || true;
+
 
 window.addEventListener("load", draw);
 
-async function draw() {
-    let testRenderer = new SketchyRenderer_V1();
-    await testRenderer.ready;
-    console.log('draw yo')
-    setInterval(async () => {
-        console.log('render interval loop yo')
-        await testRenderer.render({
-            priority: undefined,
-            targetAddr: undefined,
-            targetTjpAddr: undefined,
-        });
-    }, 100);
+async function draw(): Promise<void> {
+    await doTestRenderer('canvas1');
+    await doTestRenderer('canvas2');
+    await doTestRenderer('canvas3');
+    await doTestRenderer('canvas4');
+}
+
+async function doTestRenderer(canvasName: string): Promise<void> {
+    const lc = `[${doTestRenderer.name}]`;
+    try {
+        if (logalot) { console.log(`${lc} starting... (I: 554b4ce2b6d1bd8094a580a9c95c2d23)`); }
+        let testRenderer = new SketchyRenderer_V1(canvasName);
+        await testRenderer.ready;
+        setInterval(async () => {
+            console.log('render interval loop yo')
+            await testRenderer.render({
+                priority: undefined,
+                targetAddr: undefined,
+                targetTjpAddr: undefined,
+            });
+        }, Math.random() * 1000);
+
+    } catch (error) {
+        console.error(`${lc} ${error.message}`);
+        throw error;
+    } finally {
+        if (logalot) { console.log(`${lc} complete.`); }
+    }
 }
