@@ -9,7 +9,7 @@
   "main": "dist/index.mjs",
   "scripts": {
     "clean": "rm -rf ./dist",
-    "build": "npm run clean && tsc -b tsconfig.json --force && npm run copy:assets",
+    "build": "npm run clean && tsc -b tsconfig.json --force && npm run copy:assets && npm run copy:node_modules",
     "build:test": "npm run clean && tsc -b tsconfig.test.json --force",
     "build:test:noclean": "tsc -b tsconfig.test.json --force",
     "test": "npm run test:both",
@@ -35,6 +35,7 @@
     "start": "npm run serve",
     "man:start": "builds and starts a server atow",
     "copy:assets": "cp ./src/assets/*.* ./dist",
+    "copy:node_modules": "cp ./node_modules ./dist -r",
     "serve": "npx http-server -c=-1 -p=8000 ./dist"
   },
   "type": "module",
@@ -48,10 +49,11 @@
   "author": "William Raiford",
   "license": "ISC",
   "dependencies": {
-    "@ibgib/core-gib": "^0.0.30",
+    "@ibgib/core-gib": "^0.0.32",
     "@ibgib/encrypt-gib": "^0.2.20",
-    "@ibgib/helper-gib": "^0.0.15",
-    "@ibgib/ts-gib": "^0.5.4"
+    "@ibgib/helper-gib": "^0.0.16",
+    "@ibgib/ts-gib": "^0.5.4",
+    "davinci-eight": "^8.4.53"
   },
   "devDependencies": {
     "@types/node": "^20.2.1",

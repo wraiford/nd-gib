@@ -6,14 +6,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
   <title>ibgib test title</title>
-  <style>
-    canvas {
-      border: 1px solid black;
-    }
-  </style>
+  <!-- "davinci-eight": "https://unpkg.com/davinci-eight@latest/dist/esm/index.js", -->
+  <!-- "@ibgib/helper-gib": "https://unpkg.com/@ibgib/helper-gib@latest/dist/index.mjs",
+      "@ibgib/helper-gib/": "https://unpkg.com/@ibgib/helper-gib@latest/",
+      "@ibgib/ts-gib": "https://unpkg.com/@ibgib/ts-gib@latest/dist/index.mjs",
+      "@ibgib/ts-gib/": "https://unpkg.com/@ibgib/ts-gib@latest/",
+      "@ibgib/core-gib": "https://unpkg.com/@ibgib/core-gib@latest/dist/index.mjs",
+      "@ibgib/core-gib/": "https://unpkg.com/@ibgib/core-gib@latest/" -->
+  <!-- "@ibgib/core-gib": "./node_modules/@ibgib/core-gib/dist/index.mjs",
+      "@ibgib/core-gib/": "./node_modules/@ibgib/core-gib/" -->
+
+  <!-- "@ibgib/helper-gib": "./node_modules/@ibgib/helper-gib/dist/index.mjs",
+      "@ibgib/helper-gib/": "./node_modules/@ibgib/helper-gib/",
+      "@ibgib/ts-gib": "./node_modules/@ibgib/ts-gib/dist/index.mjs",
+      "@ibgib/ts-gib/": "./node_modules/@ibgib/ts-gib/",
+      "@ibgib/core-gib": "https://unpkg.com/@ibgib/core-gib@latest/dist/index.mjs",
+      "@ibgib/core-gib/": "https://unpkg.com/@ibgib/core-gib@latest/" -->
   <script type="importmap">
   {
     "imports": {
+      "davinci-eight": "./node_modules/davinci-eight/dist/esm/index.js",
+      "rxjs/": "./node_modules/rxjs/dist/esm/",
       "@ibgib/helper-gib": "https://unpkg.com/@ibgib/helper-gib@latest/dist/index.mjs",
       "@ibgib/helper-gib/": "https://unpkg.com/@ibgib/helper-gib@latest/",
       "@ibgib/ts-gib": "https://unpkg.com/@ibgib/ts-gib@latest/dist/index.mjs",
@@ -23,15 +36,21 @@
     }
   }
   </script>
+  <link rel="stylesheet" href="styles.css">
   <script type="module" src="/index.mjs"></script>
 </head>
 
 <body>
-  <h1>hello wakka</h1>
-  <canvas id="canvas1"></canvas>
-  <canvas id="canvas2"></canvas>
+  <div id="container">
+    <canvas id="canvas1"></canvas>
+    <div id="hud">
+      <p>hello wakka</p>
+      <button onClick="handleClick()">Click Me</button>
+    </div>
+  </div>
+  <!-- <canvas id="canvas2"></canvas>
   <canvas id="canvas3"></canvas>
-  <canvas id="canvas4"></canvas>
+  <canvas id="canvas4"></canvas> -->
 </body>
 
 </html>

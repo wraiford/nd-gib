@@ -1,0 +1,26 @@
+body {
+    overflow: hidden;
+}
+
+#container {
+    position: relative;
+}
+
+#container canvas,
+#hud {
+    position: absolute;
+}
+
+#hud p {
+    color: pink;
+    border-color: red;
+    border-style: solid;
+    border-radius: 15px;
+    border-width: 5px;
+    height: auto;
+    width: auto;
+}
+
+canvas {
+    border: 1px solid black;
+}
