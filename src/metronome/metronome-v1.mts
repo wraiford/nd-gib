@@ -20,7 +20,7 @@ import { isComment } from '@ibgib/core-gib/dist/common/comment/comment-helper.mj
 import { isPic } from '@ibgib/core-gib/dist/common/pic/pic-helper.mjs';
 import { CommentIbGib_V1 } from '@ibgib/core-gib/dist/common/comment/comment-types.mjs';
 import { PicIbGib_V1 } from '@ibgib/core-gib/dist/common/pic/pic-types.mjs';
-import { errorIbGib } from '@ibgib/core-gib/dist/common/error/error-helper.mjs';
+import { getErrorIbGib } from '@ibgib/core-gib/dist/common/error/error-helper.mjs';
 import { DynamicFormFactoryBase } from '@ibgib/core-gib/dist/witness/factory/dynamic-form-factory-base.mjs';
 import { DynamicFormBuilder } from '@ibgib/core-gib/dist/common/form/form-helper.mjs';
 import { DynamicForm } from '@ibgib/core-gib/dist/common/form/form-items.mjs';
@@ -158,7 +158,7 @@ export class Metronome_V1
         } catch (error) {
             console.error(`${lc} ${extractErrorMsg(error)}`);
             if (this.data?.catchAllErrors) {
-                return (await errorIbGib({ rawMsg: extractErrorMsg(error) })) as MetronomeResultIbGib;
+                return (await getErrorIbGib({ rawMsg: extractErrorMsg(error) })) as MetronomeResultIbGib;
             } else {
                 throw error;
             }

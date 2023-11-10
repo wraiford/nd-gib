@@ -9,7 +9,7 @@ import { MetaspaceService } from "@ibgib/core-gib/dist/witness/space/metaspace/m
 import { GLOBAL_LOG_A_LOT } from "../ibgib-constants.mjs";
 import { RenderOptions, RendererCmd, RendererCmdData, RendererCmdIbGib, RendererCmdModifier, RendererCmdRel8ns, RendererIbGib_V1 } from "./renderer-types.mjs";
 import { RendererData_V1, RendererRel8ns_V1 } from "./renderer-types.mjs";
-import { errorIbGib } from "@ibgib/core-gib/dist/common/error/error-helper.mjs";
+import { getErrorIbGib } from "@ibgib/core-gib/dist/common/error/error-helper.mjs";
 import { isComment } from "@ibgib/core-gib/dist/common/comment/comment-helper.mjs";
 import { isPic } from "@ibgib/core-gib/dist/common/pic/pic-helper.mjs";
 import { CommentIbGib_V1 } from "@ibgib/core-gib/dist/common/comment/comment-types.mjs";
@@ -181,7 +181,7 @@ export abstract class RendererBase_V1<
         } catch (error) {
             console.error(`${lc} ${extractErrorMsg(error)}`);
             if (this.data?.catchAllErrors) {
-                return (await errorIbGib({ rawMsg: error.message })) as TResultIbGib;
+                return (await getErrorIbGib({ rawMsg: error.message })) as TResultIbGib;
             } else {
                 throw error;
             }
