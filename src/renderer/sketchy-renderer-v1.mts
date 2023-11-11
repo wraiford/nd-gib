@@ -8,6 +8,7 @@ import {
     Facet, // webgl related
     Geometric3, ImageTexture, MinecraftFigure, // multivector in 3d
     PerspectiveCamera,
+    Scalar,
     Scene,
     Texture,
     TextureLoader,
@@ -171,12 +172,26 @@ export class SketchyRenderer_V1 extends RendererBase_V1<
             const texture = await loader.imageTexture('green_with_squiggles.png')
             texture.minFilter = TextureMinFilter.NEAREST
             box.texture = texture
+            setInterval(() => {
+                console.log(`box.position: ${box.position}`);
+            }, 1000);
             // texture.release()
-            scene.add(box)
+            scene.add(box);
 
-            const figure = new MinecraftFigure(engine, texture, {
-                // height: 10,
-            });
+            const box2 = new Box(engine, { textured: false, color: Color.white, mode: 'wire', });
+            box2.position = box2.position.add(new Geometric3([0, box.height, box.width, box.depth, 0, 0, 0, 0]));
+            setInterval(() => {
+                console.log(`box.position: ${box.position}`);
+            }, 1000);
+            // box2.position = e2.mul(new Geometric3([25, 0, 0, 0, 0, 0, 0, 0]));
+            // texture.release()
+            scene.add(box2);
+
+            // const figure = new MinecraftFigure(engine, texture, {
+            //     // height: 10,
+            // });
+            // figure.position = e2.mul(new Geometric3([25, 0, 0, 0, 0, 0, 0, 0]));
+            // scene.add(figure);
             // const basis = new Basis(engine)
 
             await this.initialize_trackball();
@@ -199,6 +214,9 @@ export class SketchyRenderer_V1 extends RendererBase_V1<
 
                     box.render(ambients)
                     // basis.render(ambients)
+
+                    // box2.position = box2.position.add(e2.mul(new Geometric3([0.001, 0.2, 2, 3, 0, 0, 0, 0])));
+                    box2.render(ambients);
 
                     // This call keeps the animation going.
                     requestAnimationFrame(animate)

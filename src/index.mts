@@ -45,8 +45,8 @@ async function doTestRenderer(canvasName: string): Promise<void> {
     }
 }
 
-export function handleClick(): void {
-    const lc = `[${handleClick.name}]`;
+export function handleClick_add(): void {
+    const lc = `[${handleClick_add.name}]`;
     try {
         if (logalot) { console.log(`${lc} starting... (I: d6a04b12c75cfd1e0a00fbcfa72deb23)`); }
 
@@ -58,4 +58,4 @@ export function handleClick(): void {
     }
 }
 
-(window as any).handleClick = handleClick;
+(window as any).handleClick_add = handleClick_add;

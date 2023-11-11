@@ -1,24 +1,32 @@
 body {
     overflow: hidden;
+    margin: 0px;
 }
 
-#container {
+.metacanvas {
+    width: 100%;
     position: relative;
 }
 
-#container canvas,
+.metacanvas canvas,
 #hud {
     position: absolute;
 }
 
-#hud p {
-    color: pink;
-    border-color: red;
-    border-style: solid;
-    border-radius: 15px;
-    border-width: 5px;
-    height: auto;
-    width: auto;
+#hud {
+    /* actual width 100% */
+    left: 0;
+    right: 0;
+
+    p {
+        color: pink;
+        border-color: red;
+        border-style: solid;
+        border-radius: 15px;
+        border-width: 5px;
+        /* height: auto;
+        width: auto; */
+    }
 }
 
 canvas {
