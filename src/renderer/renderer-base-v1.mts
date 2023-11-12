@@ -3,11 +3,12 @@ import { IbGibRel8ns_V1, IbGib_V1 } from "@ibgib/ts-gib/dist/V1/types.mjs";
 import { ErrorIbGib_V1 } from "@ibgib/core-gib/dist/common/error/error-types.mjs";
 import { argy_, isArg, isCommand } from "@ibgib/core-gib/dist/witness/witness-helper.mjs";
 import { WitnessWithContextBase_V1 } from "@ibgib/core-gib/dist/witness/witness-with-context/witness-with-context-base-v1.mjs";
+import { LightWitnessBase_V1 } from "@ibgib/core-gib/dist/witness/light-witness-base-v1.mjs";
 import { AppBase_V1 } from "@ibgib/core-gib/dist/witness/app/app-base-v1.mjs";
 import { MetaspaceService } from "@ibgib/core-gib/dist/witness/space/metaspace/metaspace-types.mjs";
 
 import { GLOBAL_LOG_A_LOT } from "../ibgib-constants.mjs";
-import { RenderOptions, RendererCmd, RendererCmdData, RendererCmdIbGib, RendererCmdModifier, RendererCmdRel8ns, RendererIbGib_V1 } from "./renderer-types.mjs";
+import { RenderOptions, RendererCmd, RendererCmdData, RendererCmdIbGib, RendererCmdModifier, RendererCmdRel8ns, RendererIbGib_V1, RendererResultData, RendererResultIbGib, RendererResultRel8ns } from "./renderer-types.mjs";
 import { RendererData_V1, RendererRel8ns_V1 } from "./renderer-types.mjs";
 import { getErrorIbGib } from "@ibgib/core-gib/dist/common/error/error-helper.mjs";
 import { isComment } from "@ibgib/core-gib/dist/common/comment/comment-helper.mjs";
@@ -26,23 +27,20 @@ const logalot = GLOBAL_LOG_A_LOT || true;
  * whatever) or an individual component within that context.
  */
 export abstract class RendererBase_V1<
-    // export abstract class AppBase_V1<
     TCmd extends RendererCmd, TCmdModifiers extends RendererCmdModifier,
-    TOptionsData extends any = any,
-    TOptionsRel8ns extends IbGibRel8ns_V1 = IbGibRel8ns_V1,
-    TOptionsIbGib extends IbGib_V1<TOptionsData, TOptionsRel8ns>
-    = IbGib_V1<TOptionsData, TOptionsRel8ns>,
-    TResultData extends any = any,
-    TResultRel8ns extends IbGibRel8ns_V1 = IbGibRel8ns_V1,
-    TResultIbGib extends IbGib_V1<TResultData, TResultRel8ns> | ErrorIbGib_V1
-    = IbGib_V1<TResultData, TResultRel8ns>,
+    TOptionsData extends RendererCmdData<TCmd, TCmdModifiers> = RendererCmdData<TCmd, TCmdModifiers>,
+    TOptionsRel8ns extends RendererCmdRel8ns = RendererCmdRel8ns,
+    TOptionsIbGib extends RendererCmdIbGib<TCmd, TCmdModifiers, TOptionsData, TOptionsRel8ns>
+    = RendererCmdIbGib<TCmd, TCmdModifiers, TOptionsData, TOptionsRel8ns>,
+    TResultData extends RendererResultData = RendererResultData,
+    TResultRel8ns extends RendererResultRel8ns = RendererResultRel8ns,
+    TResultIbGib extends RendererResultIbGib = RendererResultIbGib,
     TData extends RendererData_V1 = RendererData_V1,
     TRel8ns extends RendererRel8ns_V1 = RendererRel8ns_V1,
 >
     extends WitnessWithContextBase_V1<
-        // extends AppBase_V1<
         TOptionsData, TOptionsRel8ns, TOptionsIbGib,
-        TResultData, TResultRel8ns, TResultIbGib,
+        TResultData, TResultRel8ns, IbGib_V1<TResultData, TResultRel8ns>,
         TData, TRel8ns>
     implements RendererIbGib_V1 {
 
@@ -109,7 +107,8 @@ export abstract class RendererBase_V1<
      * In the base class, this just returns {@link routeAndDoArg}. If you don't
      * want to route, then override this.
      */
-    protected async witnessImpl(arg: TOptionsIbGib): Promise<TResultIbGib | undefined> {
+    // protected async witnessImpl(arg: TOptionsIbGib): Promise<TResultIbGib | undefined> {
+    protected async witnessImpl(arg: TOptionsIbGib): Promise<IbGib_V1<TResultData, TResultRel8ns> | undefined> {
         const lc = `${this.lc}[${this.witnessImpl.name}]`;
         try {
             if (logalot) { console.log(`${lc} starting...`); }
@@ -132,7 +131,7 @@ export abstract class RendererBase_V1<
 
             if (!result) { console.warn(`${lc} result falsy...Could not produce result? Was doDefault implemented in concrete class? (W: a9e8607bcc584357b7dfc3f7fb05155d)`); }
 
-            return result;
+            return result as IbGib_V1<TResultData, TResultRel8ns>;
         } catch (error) {
             console.error(`${lc} ${extractErrorMsg(error)}`);
             throw error;

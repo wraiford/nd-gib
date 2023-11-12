@@ -4,7 +4,10 @@ body {
 }
 
 .metacanvas {
-    width: 100%;
+    /* width: 100%; */
+    left: 0;
+    right: 0;
+
     position: relative;
 }
 
@@ -17,6 +20,10 @@ body {
     /* actual width 100% */
     left: 0;
     right: 0;
+    border-color: green;
+    border-style: dashed;
+    border-radius: 10px;
+    border-width: 3px;
 
     p {
         color: pink;

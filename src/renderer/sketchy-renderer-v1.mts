@@ -166,33 +166,31 @@ export class SketchyRenderer_V1 extends RendererBase_V1<
             ambients.push(dirLight)
 
             const scene = new Scene(engine);
+            const scene2 = new Scene(engine);
+            const scene3 = new Scene(engine);
 
             const box = new Box(engine, { textured: true, color: Color.white, mode: 'mesh', });
             const loader = new TextureLoader(engine);
             const texture = await loader.imageTexture('green_with_squiggles.png')
             texture.minFilter = TextureMinFilter.NEAREST
             box.texture = texture
-            setInterval(() => {
-                console.log(`box.position: ${box.position}`);
-            }, 1000);
-            // texture.release()
             scene.add(box);
+
+            const basis = new Basis(engine)
+            scene.add(basis);
 
             const box2 = new Box(engine, { textured: false, color: Color.white, mode: 'wire', });
             box2.position = box2.position.add(new Geometric3([0, box.height, box.width, box.depth, 0, 0, 0, 0]));
-            setInterval(() => {
-                console.log(`box.position: ${box.position}`);
-            }, 1000);
-            // box2.position = e2.mul(new Geometric3([25, 0, 0, 0, 0, 0, 0, 0]));
-            // texture.release()
-            scene.add(box2);
+            scene2.add(box2);
 
-            // const figure = new MinecraftFigure(engine, texture, {
-            //     // height: 10,
-            // });
-            // figure.position = e2.mul(new Geometric3([25, 0, 0, 0, 0, 0, 0, 0]));
-            // scene.add(figure);
-            // const basis = new Basis(engine)
+            const box3 = new Box(engine, { textured: true, color: Color.gray, mode: 'mesh', });
+            box3.position = box3.position.sub(new Geometric3([2, 2 * box.height, box.width, box.depth, 0, 0, 0, 0]));
+            const loader3 = new TextureLoader(engine);
+            const texture3 = await loader3.imageTexture('green_with_squiggles.png')
+            texture3.minFilter = TextureMinFilter.NEAREST
+            box3.texture = texture3
+            scene3.add(box3);
+
 
             await this.initialize_trackball();
 
@@ -209,15 +207,16 @@ export class SketchyRenderer_V1 extends RendererBase_V1<
                     const t = _timestamp * 0.001;
                     const theta = 2 * Math.PI * t / 1000;
 
-                    box.R.rotorFromGeneratorAngle({ xy: 0, yz: 1, zx: 0 }, theta)
+                    // box.R.rotorFromGeneratorAngle({ xy: 0, yz: 1, zx: 0 }, theta)
                     // box.attitude.rotorFromAxisAngle(e2, t)
 
-                    box.render(ambients)
+                    scene.render(ambients)
                     // basis.render(ambients)
 
                     // box2.position = box2.position.add(e2.mul(new Geometric3([0.001, 0.2, 2, 3, 0, 0, 0, 0])));
-                    box2.render(ambients);
+                    scene2.render(ambients);
 
+                    scene3.render(ambients);
                     // This call keeps the animation going.
                     requestAnimationFrame(animate)
                 }
