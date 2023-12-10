@@ -49,7 +49,7 @@
   "author": "William Raiford",
   "license": "ISC",
   "dependencies": {
-    "@ibgib/core-gib": "^0.0.34",
+    "@ibgib/core-gib": "^0.0.35",
     "@ibgib/encrypt-gib": "^0.2.20",
     "@ibgib/helper-gib": "^0.0.16",
     "@ibgib/ts-gib": "^0.5.4",
