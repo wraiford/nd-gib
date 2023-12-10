@@ -13,12 +13,6 @@ const logalot = GLOBAL_LOG_A_LOT || true;
 
 // window.addEventListener("load", draw);
 
-// async function draw(): Promise<void> {
-// await doTestRenderer('canvas1');
-// await doTestRenderer('canvas2');
-// await doTestRenderer('canvas3');
-// await doTestRenderer('canvas4');
-// }
 
 async function doTestRenderer(canvasName: string): Promise<void> {
     const lc = `[${doTestRenderer.name}]`;
@@ -36,7 +30,6 @@ async function doTestRenderer(canvasName: string): Promise<void> {
             // }, Math.random() * 1000);
         }, 1000);
 
-
     } catch (error) {
         console.error(`${lc} ${error.message}`);
         throw error;
@@ -48,27 +41,42 @@ async function doTestRenderer(canvasName: string): Promise<void> {
 let sizingViews = false;
 async function sizeViews(): Promise<void> {
     const lc = `[${sizeViews.name}]`;
+    const btnAddView = document.getElementById("add-view-btn") as HTMLButtonElement;
     try {
         if (logalot) { console.log(`${lc} starting... (I: 6ce21828ccedaae6b7bedc4b15c14223)`); }
         if (sizingViews) { return; /* <<<< returns early */ }
         sizingViews = true;
-
+        btnAddView.disabled = true;
         const divMetacanvas = document.getElementById("metacanvas") as HTMLDivElement;
-        const canvasCount = divMetacanvas.childNodes.length;
+        const divMetacanvasChildren =
+            [...divMetacanvas.childNodes].filter(x => x.nodeType === Node.ELEMENT_NODE);
+        const canvasCount = divMetacanvasChildren.length;
 
         /**
          * views atow are square, so get the smallest max edge size for the window
          */
         const smallestWindowSide =
-            window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth;
+            window.innerWidth > window.innerHeight ?
+                window.innerHeight :
+                window.innerWidth;
+        console.warn(`smallestWindowSide: ${smallestWindowSide}`);
+
+        const tweak = (len: number) => {
+            return Math.ceil(len * .5)
+        }
 
         if (canvasCount === 0) {
+            console.warn('canvasCount === 0')
             return; /* <<<< returns early */
         } else if (canvasCount === 1) {
+            console.warn('canvasCount === 1')
             const canvas = divMetacanvas.children.item(0) as HTMLCanvasElement;
-            canvas.style.width = `${smallestWindowSide}px`;
-            canvas.style.height = `${smallestWindowSide}px`;
+            setTimeout(() => {
+                canvas.style.width = `${tweak(smallestWindowSide)}px`;
+                canvas.style.height = `${tweak(smallestWindowSide)}px`;
+            });
         } else {
+            console.warn('canvasCount > 1')
             const rowSize_withoutPadding = Math.floor(smallestWindowSide / 2);
             const canvasSize = Math.floor(0.7 * rowSize_withoutPadding);
             const totalPadding = rowSize_withoutPadding - canvasSize;
@@ -89,7 +97,11 @@ async function sizeViews(): Promise<void> {
         throw error;
     } finally {
         if (logalot) { console.log(`${lc} complete.`); }
-        sizingViews = false;
+        // when we add a view, we want to wait err something hmm...
+        setTimeout(() => {
+            btnAddView.disabled = false;
+            sizingViews = false;
+        }, 2000);
     }
 }
 

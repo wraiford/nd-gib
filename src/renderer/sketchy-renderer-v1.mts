@@ -232,7 +232,7 @@ export class SketchyRenderer_V1 extends RendererBase_V1<
             }, 1000);
 
             // Uncomment this line (and add the import)  if you want the canvas to fill the browser window.
-            windowResizer(engine, camera).resize()
+            // windowResizer(engine, camera).resize()
 
             // This call "primes the pump".
             requestAnimationFrame(animate)
